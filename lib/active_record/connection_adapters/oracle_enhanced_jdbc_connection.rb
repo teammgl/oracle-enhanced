@@ -35,7 +35,13 @@ begin
 
   ORACLE_DRIVER = Java::oracle.jdbc.OracleDriver.new
   java.sql.DriverManager.registerDriver ORACLE_DRIVER
-  at_exit { java.sql.DriverManager.deregisterDriver ORACLE_DRIVER }
+  at_exit do
+    begin
+      java.sql.DriverManager.deregisterDriver ORACLE_DRIVER
+    rescue java.lang.SecurityException
+      # expected
+    end
+  end
 
   # set tns_admin property from TNS_ADMIN environment variable
   if !java.lang.System.get_property("oracle.net.tns_admin") && ENV["TNS_ADMIN"]

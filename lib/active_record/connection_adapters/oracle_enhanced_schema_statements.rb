@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'digest/sha1'
 
 module ActiveRecord
@@ -66,8 +67,11 @@ module ActiveRecord
             end
             super(name, type, options)
           end
+
+          attr_accessor :table_name
         end
 
+        table_definition.table_name = name
         result = block.call(table_definition) if block
         create_sequence = create_sequence || table_definition.create_sequence
         column_comments = table_definition.column_comments if table_definition.column_comments

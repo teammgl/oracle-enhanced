@@ -50,9 +50,11 @@ module ActiveRecord
     end
   
     module OracleEnhancedTableDefinition
-      class ForeignKey < Struct.new(:base, :to_table, :options) #:nodoc:
+      class ForeignKey < Struct.new(:base, :from_table, :to_table, :options) #:nodoc:
         def to_sql
-          base.foreign_key_definition(to_table, options)
+          columns = options[:column] || options[:columns] || "#{to_table.to_s.singularize}_id"
+          constraint_name = base.foreign_key_constraint_name(from_table, columns, options)
+          "CONSTRAINT #{base.quote_column_name(constraint_name)} #{base.foreign_key_definition(to_table, options)}"
         end
         alias to_s :to_sql
       end
@@ -131,7 +133,7 @@ module ActiveRecord
       def foreign_key(to_table, options = {})
         if @base.respond_to?(:supports_foreign_keys?) && @base.supports_foreign_keys?
           to_table = to_table.to_s.pluralize if ActiveRecord::Base.pluralize_table_names
-          foreign_keys << ForeignKey.new(@base, to_table, options)
+          foreign_keys << ForeignKey.new(@base, self.table_name, to_table, options)
         else
           raise ArgumentError, "this ActiveRecord adapter is not supporting foreign_key definition"
         end

@@ -126,8 +126,6 @@ module ActiveRecord
         execute "ALTER TABLE #{quote_table_name(from_table)} DROP CONSTRAINT #{quote_column_name(constraint_name)}"
       end
 
-      private
-
       def foreign_key_constraint_name(table_name, columns, options = {})
         columns = Array(columns)
         constraint_name = original_name = options[:name] || "#{table_name}_#{columns.join('_')}_fk"
@@ -144,8 +142,6 @@ module ActiveRecord
         constraint_name
       end
       
-
-      public
 
       # get table foreign keys for schema dump
       def foreign_keys(table_name) #:nodoc:

@@ -119,7 +119,7 @@ module ActiveRecord
           privilege = config[:privilege] && config[:privilege].to_s
 
           # connection using TNS alias
-          if database && !host && !config[:url] && ENV['TNS_ADMIN']
+          if database && !host && !config[:url]
             url = "jdbc:oracle:thin:@#{database}"
           else
             unless database.match(/^(\:|\/)/)
